@@ -105,19 +105,6 @@ const deletePost = async (req, res) => {
     }
 };
 
-// Báo cáo bài viết
-const reportPost = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { reason } = req.body;
-        const userId = req.user.id;
-
-        await Report.create({ reason, userId, postId: id });
-        res.status(201).json({ message: 'Báo cáo bài viết thành công' });
-    } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi báo cáo bài viết', error });
-    }
-};
 
 // Thêm emoji vào bài viết
 const addEmoji = async (req, res) => {
@@ -206,7 +193,6 @@ module.exports = {
     banPost,
     unbanPost,
     getReportReasons,
-    reportPost,
     getPosts
 };
 
