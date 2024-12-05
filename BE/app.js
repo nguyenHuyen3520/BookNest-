@@ -3,10 +3,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const postRoutes = require('./routes/postRoutes');
 const userRoutes = require('./routes/userRoutes');
-const { sequelize } = require('./models');
+const sequelize = require('./models');
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(bodyParser.json());
 

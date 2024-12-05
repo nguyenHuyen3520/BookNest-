@@ -1,7 +1,7 @@
 // routes/postRoutes.js
 const express = require('express');
 const { createPost, getPosts } = require('../controllers/postController');
-const { verifyToken } = require('../middlewares/authMiddleware');
+const { verifyToken } = require('../middlewares/authController');
 
 const router = express.Router();
 

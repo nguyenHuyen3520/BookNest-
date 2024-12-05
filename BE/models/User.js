@@ -24,6 +24,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true,  // URL ảnh đại diện
         },
+        resetToken: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        resetTokenExpires: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
     });
 
     User.associate = function (models) {

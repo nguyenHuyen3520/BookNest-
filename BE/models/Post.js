@@ -1,4 +1,3 @@
-// models/Post.js
 module.exports = (sequelize, DataTypes) => {
     const Post = sequelize.define('Post', {
         id: {
@@ -15,21 +14,27 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         imageUrl: {
-            type: DataTypes.STRING,  // Lưu đường dẫn tới ảnh
-            allowNull: true,         // Ảnh là tùy chọn
+            type: DataTypes.STRING(2048),
+            allowNull: true,
         },
         emojis: {
-            type: DataTypes.STRING,  // Lưu chuỗi emojis
+            type: DataTypes.JSON,
             allowNull: true,
         },
         status: {
             type: DataTypes.STRING,
-            defaultValue: 'pending', // Trạng thái bài viết (pending, approved, rejected)
+            defaultValue: 'pending',
         },
         userId: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        categoryId: { // Thêm khóa ngoại cho thể loại
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+    }, {
+        timestamps: true,
     });
 
     Post.associate = function (models) {
@@ -37,6 +42,11 @@ module.exports = (sequelize, DataTypes) => {
         Post.belongsTo(models.User, {
             foreignKey: 'userId',
             as: 'user',
+        });
+        // Một bài viết thuộc về một thể loại
+        Post.belongsTo(models.Category, {
+            foreignKey: 'categoryId',
+            as: 'category',
         });
     };
 
