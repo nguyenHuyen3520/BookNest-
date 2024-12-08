@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "Huyen3520@",
+    "database": "booknest",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "Huyen3520@",
+    "database": "booknest",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "Huyen3520@",
+    "database": "booknest",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

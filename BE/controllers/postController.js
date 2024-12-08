@@ -1,7 +1,6 @@
 // controllers/postController.js
-const { Post, User } = require('../models');
 const Category = require('../models/Category');
-
+const { Post, User, Report, PostEmoji } = require('../models');
 // Danh sách lý do báo cáo
 const reportReasons = [
     { id: 1, reason: 'Nội dung không phù hợp' },
@@ -47,7 +46,7 @@ const reportPost = async (req, res) => {
     }
 };
 
-const { Post, User, Report, PostEmoji } = require('../models');
+
 
 // Tạo bài viết mới
 const createPost = async (req, res) => {

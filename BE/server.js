@@ -10,8 +10,8 @@ const port = 3001;
 
 app.use(bodyParser.json());
 
-app.use('/api', postRoutes);
-app.use('/api', userRoutes);
+app.use('/v1/api', postRoutes);
+app.use('/v1/api', userRoutes);
 
 sequelize.sync()
     .then(() => {

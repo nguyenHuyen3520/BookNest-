@@ -9,18 +9,16 @@ const User = require('../models/User');
 // Hàm tạo người dùng mới
 const createUser = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { firstName,
+            lastName, email, password } = req.body;
 
-        // Kiểm tra dữ liệu đầu vào
-        if (!username || !email || !password) {
-            return res.status(400).json({ message: 'Missing required fields' });
-        }
 
         // Hash mật khẩu trước khi lưu
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await User.create({
-            username,
+            firstName,
+            lastName,
             email,
             password: hashedPassword,
         });
@@ -28,7 +26,8 @@ const createUser = async (req, res) => {
         // Loại bỏ password trước khi trả về response
         const userResponse = {
             id: newUser.id,
-            username: newUser.username,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
             email: newUser.email,
         };
 
@@ -67,7 +66,12 @@ const loginUser = async (req, res) => {
             { expiresIn: '1h' } // Token hết hạn sau 1 giờ
         );
 
-        res.status(200).json({ token, user: { id: user.id, username: user.username, email: user.email } });
+        res.status(200).json({
+            token, user: {
+                id: user.id, firstName: user.firstName,
+                lastName: user.lastName, email: user.email
+            }
+        });
     } catch (error) {
         console.error('Error logging in:', error);
         res.status(500).json({ message: 'Error logging in' });

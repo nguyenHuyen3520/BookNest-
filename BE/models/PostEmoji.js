@@ -18,6 +18,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+    }, {
+        timestamps: true,
     });
 
     PostEmoji.associate = function (models) {

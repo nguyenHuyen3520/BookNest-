@@ -1,12 +1,18 @@
-// models/User.js
+const { UUID, UUIDV4 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         id: {
-            type: DataTypes.INTEGER,
+            type: UUID,
             primaryKey: true,
-            autoIncrement: true,
+            defaultValue: UUIDV4, // Tạo UUID tự động
         },
-        username: {
+        firstName: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+        },
+        lastName: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true,
@@ -32,6 +38,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: true,
         },
+        role: {
+            type: DataTypes.ENUM('admin', 'user'), // Thêm enum để chọn role
+            defaultValue: 'user', // Mặc định là 'user'
+            allowNull: false
+        },
+    }, {
+        timestamps: true,
     });
 
     User.associate = function (models) {

@@ -1,14 +1,14 @@
 module.exports = {
     development: {
         username: 'root',
-        password: 'new_password',  // Thay bằng mật khẩu của bạn
+        password: 'Huyen3520@',  // Thay bằng mật khẩu
         database: 'booknest',
         host: 'localhost',
         dialect: 'mysql',
     },
     test: {
         username: 'root',
-        password: 'new_password',
+        password: 'Huyen3520@',
         database: 'booknest_test',
         host: 'localhost',
         dialect: 'mysql',
