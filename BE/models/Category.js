@@ -10,8 +10,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW, // Giá trị mặc định là thời gian hiện tại
+            field: 'created_at' // Cột trong database sẽ là created_at
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW, // Giá trị mặc định là thời gian hiện tại
+            field: 'updated_at' // Cột trong database sẽ là updated_at
+        }
     }, {
-        timestamps: false, // Không cần createdAt và updatedAt cho bảng này
+        timestamps: true,
+        underscored: true,
+        createdAt: "created_at",
+        updatedAt: "updated_at"
     });
 
     Category.associate = function (models) {

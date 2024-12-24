@@ -1,25 +1,39 @@
 // models/PostEmoji.js
+const { UUID, UUIDV4 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     const PostEmoji = sequelize.define('PostEmoji', {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUID,
+            defaultValue: UUIDV4,
             primaryKey: true,
-            autoIncrement: true,
         },
         emoji: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        userId: {
-            type: DataTypes.INTEGER,
+        user_id: {
+            type: DataTypes.UUID,
             allowNull: false,
         },
         postId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUID,
             allowNull: false,
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW, // Giá trị mặc định là thời gian hiện tại
+            field: 'created_at' // Cột trong database sẽ là created_at
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW, // Giá trị mặc định là thời gian hiện tại
+            field: 'updated_at' // Cột trong database sẽ là updated_at
+        }
     }, {
         timestamps: true,
+        underscored: true,
+        createdAt: "created_at",
+        updatedAt: "updated_at"
     });
 
     PostEmoji.associate = function (models) {

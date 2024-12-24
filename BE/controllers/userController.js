@@ -3,22 +3,21 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const { Op } = require('sequelize'); // Để so sánh ngày giờ
-const User = require('../models/User');
+const { User } = require('../models');
 
 
 // Hàm tạo người dùng mới
 const createUser = async (req, res) => {
     try {
-        const { firstName,
-            lastName, email, password } = req.body;
+        const { firstName, lastName, email, password } = req.body;
 
 
         // Hash mật khẩu trước khi lưu
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await User.create({
-            firstName,
-            lastName,
+            first_name: firstName,
+            last_name: lastName,
             email,
             password: hashedPassword,
         });
@@ -26,22 +25,22 @@ const createUser = async (req, res) => {
         // Loại bỏ password trước khi trả về response
         const userResponse = {
             id: newUser.id,
-            firstName: newUser.firstName,
-            lastName: newUser.lastName,
+            firstName: newUser.first_name,
+            lastName: newUser.last_name,
             email: newUser.email,
         };
 
-        res.status(201).json(userResponse);
+        return res.status(200).json({ data: userResponse, message: "Đăng ký tài khoản thành công!" });
     } catch (error) {
         console.error('Error creating user:', error);
-        res.status(500).json({ message: 'Error creating user' });
+        return res.status(500).json({ message: 'Error creating user' });
     }
 };
 
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
-
+        console.log("data: ", { email, password })
         // Kiểm tra dữ liệu đầu vào
         if (!email || !password) {
             return res.status(400).json({ message: 'Missing email or password' });
@@ -50,31 +49,28 @@ const loginUser = async (req, res) => {
         // Tìm user theo email
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: 'Tài khoản không tồn tạitại' });
         }
 
         // So sánh mật khẩu
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Invalid password' });
+            return res.status(401).json({ message: 'Mật khẩu sai' });
         }
 
         // Tạo token JWT
         const token = jwt.sign(
             { id: user.id, email: user.email },
-            process.env.JWT_SECRET, // Đặt bí mật trong `.env`
-            { expiresIn: '1h' } // Token hết hạn sau 1 giờ
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
         );
 
-        res.status(200).json({
-            token, user: {
-                id: user.id, firstName: user.firstName,
-                lastName: user.lastName, email: user.email
-            }
+        return res.status(200).json({
+            token, user, message: "Đăng nhập thành công!"
         });
     } catch (error) {
         console.error('Error logging in:', error);
-        res.status(500).json({ message: 'Error logging in' });
+        return res.status(500).json({ message: 'Error logging in' });
     }
 };
 
@@ -121,10 +117,10 @@ const forgetPassword = async (req, res) => {
 
         await transporter.sendMail(mailOptions);
 
-        res.status(200).json({ message: 'Password reset link sent to email' });
+        return res.status(200).json({ message: 'Password reset link sent to email' });
     } catch (error) {
         console.error('Error in forget password:', error);
-        res.status(500).json({ message: 'Error processing password reset' });
+        return res.status(500).json({ message: 'Error processing password reset' });
     }
 };
 
@@ -162,10 +158,37 @@ const resetPassword = async (req, res) => {
         user.resetTokenExpires = null;
         await user.save();
 
-        res.status(200).json({ message: 'Password reset successful' });
+        return res.status(200).json({ message: 'Password reset successful' });
     } catch (error) {
         console.error('Error in reset password:', error);
-        res.status(500).json({ message: 'Error resetting password' });
+        return res.status(500).json({ message: 'Error resetting password' });
+    }
+};
+
+const loginWithToken = async (req, res) => {
+    const { token } = req.body;
+
+    if (!token) {
+        return res.status(400).json({ message: 'No token provided' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findOne({ where: { id: decoded.id } });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json({
+            message: 'Đăng nhập thành công!',
+            user,
+            token,
+        });
+    } catch (error) {
+        console.error('Error verifying token:', error);
+        return res.status(401).json({ message: 'Invalid or expired token' });
     }
 };
 
@@ -173,5 +196,6 @@ module.exports = {
     createUser,
     loginUser,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    loginWithToken
 };

@@ -1,10 +1,10 @@
-// models/Post.js
+const { UUID, UUIDV4 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     const Post = sequelize.define('Post', {
         id: {
-            type: DataTypes.INTEGER,
+            type: UUID,
+            defaultValue: UUIDV4,
             primaryKey: true,
-            autoIncrement: true,
         },
         title: {
             type: DataTypes.STRING,
@@ -14,38 +14,58 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             allowNull: false,
         },
-        imageUrl: {
-            type: DataTypes.STRING,  // Lưu đường dẫn tới ảnh
-            allowNull: true,         // Ảnh là tùy chọn
+        image_url: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
-        emojis: {
-            type: DataTypes.STRING,  // Lưu chuỗi emojis
+        emoji_list: { // Đổi tên từ emojis để tránh trùng lặp
+            type: DataTypes.STRING,
             allowNull: true,
         },
         status: {
             type: DataTypes.STRING,
-            defaultValue: 'pending', // Trạng thái bài viết (pending, approved, rejected)
+            defaultValue: 'pending',
         },
-        userId: {
-            type: DataTypes.INTEGER,
+        category_id: {
+            type: UUID,
             allowNull: false,
         },
+        banned: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
+        user_id: {
+            type: UUID,
+            allowNull: false,
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW, // Giá trị mặc định là thời gian hiện tại
+            field: 'created_at' // Cột trong database sẽ là created_at
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW, // Giá trị mặc định là thời gian hiện tại
+            field: 'updated_at' // Cột trong database sẽ là updated_at
+        }
     }, {
         timestamps: true,
+        underscored: true,
+        createdAt: "created_at",
+        updatedAt: "updated_at"
     });
 
     Post.associate = function (models) {
-        // Một bài viết thuộc về một user
         Post.belongsTo(models.User, {
             foreignKey: 'userId',
             as: 'user',
         });
 
-        // Một bài viết có thể có nhiều cảm xúc (emojis)
         Post.hasMany(models.PostEmoji, {
             foreignKey: 'postId',
-            as: 'emojis',
+            as: 'emojis', // Tên liên kết vẫn giữ nguyên
         });
+
         Post.hasMany(models.Report, { as: 'reports', foreignKey: 'postId' });
     };
 

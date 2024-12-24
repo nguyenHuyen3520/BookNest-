@@ -8,16 +8,16 @@ module.exports = {
     try {
       await queryInterface.createTable('Users', {
         id: {
-          type: Sequelize.UUID,
+          type: UUID,
           primaryKey: true,
-          defaultValue: Sequelize.UUIDV4,
+          defaultValue: UUIDV4, // Tạo UUID tự động
         },
-        firstName: {
+        first_name: {
           type: Sequelize.STRING,
           allowNull: false,
           unique: true,
         },
-        lastName: {
+        last_name: {
           type: Sequelize.STRING,
           allowNull: false,
           unique: true,
@@ -31,38 +31,49 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        profileImage: {
+        profile_image: {
+          type: Sequelize.STRING,
+          allowNull: true,
+          defaultValue: 'https://firebasestorage.googleapis.com/v0/b/server-image-b9408.appspot.com/o/images%2FCNPM%2Favatar-1.png?alt=media&token=ff6ba3f7-9f8c-42b2-82c1-f45a7808732a'
+        },
+        reset_token: {
           type: Sequelize.STRING,
           allowNull: true,
         },
-        resetToken: {
-          type: Sequelize.STRING,
-          allowNull: true,
-        },
-        resetTokenExpires: {
+        reset_token_expires: {
           type: Sequelize.DATE,
           allowNull: true,
         },
         role: {
-          type: Sequelize.ENUM('admin', 'user'),
-          defaultValue: 'user',
-          allowNull: false,
+          type: Sequelize.ENUM('admin', 'user'), // Thêm enum để chọn role
+          defaultValue: 'user', // Mặc định là 'user'
+          allowNull: false
         },
+        createdAt: {
+          type: Sequelize.DATE,
+          defaultValue: Sequelize.NOW, // Giá trị mặc định là thời gian hiện tại
+          field: 'created_at' // Cột trong database sẽ là created_at
+        },
+        updatedAt: {
+          type: Sequelize.DATE,
+          defaultValue: Sequelize.NOW, // Giá trị mặc định là thời gian hiện tại
+          field: 'updated_at' // Cột trong database sẽ là updated_at
+        }
       });
 
       await queryInterface.bulkInsert('Users', [
         {
           id: uuidv4(),
-          firstName: 'Admin',
-          lastName: 'AdminUser',
+          first_name: 'Admin',
+          last_name: 'AdminUser',
           email: 'admin@gmail.com',
           password: 'admin@123',
           role: 'admin',
         },
         {
           id: uuidv4(),
-          firstName: 'Normal',
-          lastName: 'NormalUser',
+          first_name: 'Normal',
+          last_name: 'NormalUser',
           email: 'user@gmail.com',
           password: 'user@123',
           role: 'user',

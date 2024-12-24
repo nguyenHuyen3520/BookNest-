@@ -1,8 +1,8 @@
 'use strict';
-
+const { UUID, UUIDV4 } = require('sequelize');
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Category', {
+    await queryInterface.createTable('Categories', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -14,14 +14,14 @@ module.exports = {
         allowNull: false
       },
       createdAt: {
-        allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW, // Giá trị mặc định là thời gian hiện tại
+        field: 'created_at' // Cột trong database sẽ là created_at
       },
       updatedAt: {
-        allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW, // Giá trị mặc định là thời gian hiện tại
+        field: 'updated_at' // Cột trong database sẽ là updated_at
       }
     });
   },

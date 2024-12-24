@@ -1,25 +1,39 @@
 // models/Report.js
+const { UUID, UUIDV4 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     const Report = sequelize.define('Report', {
         id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
+            type: DataTypes.UUID,
+            defaultValue: UUIDV4,
             primaryKey: true,
         },
         reason: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        postId: {
-            type: DataTypes.INTEGER,
+        post_id: {
+            type: DataTypes.UUID,
             allowNull: false,
         },
-        userId: {
-            type: DataTypes.INTEGER,
+        user_id: {
+            type: DataTypes.UUID,
             allowNull: false,
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW, // Giá trị mặc định là thời gian hiện tại
+            field: 'created_at' // Cột trong database sẽ là created_at
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW, // Giá trị mặc định là thời gian hiện tại
+            field: 'updated_at' // Cột trong database sẽ là updated_at
+        }
     }, {
         timestamps: true,
+        underscored: true,
+        createdAt: "created_at",
+        updatedAt: "updated_at"
     });
 
     Report.associate = function (models) {

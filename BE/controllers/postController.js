@@ -12,7 +12,7 @@ const reportReasons = [
 
 // Lấy danh sách lý do báo cáo
 const getReportReasons = (req, res) => {
-    res.status(200).json(reportReasons);
+    return res.status(200).json(reportReasons);
 };
 
 // Báo cáo bài viết
@@ -40,9 +40,9 @@ const reportPost = async (req, res) => {
             postId: id,
         });
 
-        res.status(201).json({ message: 'Báo cáo bài viết thành công', report });
+        return res.status(201).json({ message: 'Báo cáo bài viết thành công', report });
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi báo cáo bài viết', error });
+        return res.status(500).json({ message: 'Lỗi khi báo cáo bài viết', error });
     }
 };
 
@@ -55,9 +55,9 @@ const createPost = async (req, res) => {
         const userId = req.user.id;
 
         const post = await Post.create({ title, content, imageUrl, userId, categoryId });
-        res.status(201).json({ message: 'Tạo bài viết thành công', post });
+        return res.status(201).json({ message: 'Tạo bài viết thành công', post });
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi tạo bài viết', error });
+        return res.status(500).json({ message: 'Lỗi khi tạo bài viết', error });
     }
 };
 
@@ -77,9 +77,9 @@ const updatePost = async (req, res) => {
         }
 
         await post.update({ title, content, imageUrl });
-        res.status(200).json({ message: 'Cập nhật bài viết thành công', post });
+        return res.status(200).json({ message: 'Cập nhật bài viết thành công', post });
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi cập nhật bài viết', error });
+        return res.status(500).json({ message: 'Lỗi khi cập nhật bài viết', error });
     }
 };
 
@@ -98,9 +98,9 @@ const deletePost = async (req, res) => {
         }
 
         await post.destroy();
-        res.status(200).json({ message: 'Xóa bài viết thành công' });
+        return res.status(200).json({ message: 'Xóa bài viết thành công' });
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi xóa bài viết', error });
+        return res.status(500).json({ message: 'Lỗi khi xóa bài viết', error });
     }
 };
 
@@ -113,9 +113,9 @@ const addEmoji = async (req, res) => {
         const userId = req.user.id;
 
         await PostEmoji.create({ emoji, userId, postId: id });
-        res.status(201).json({ message: 'Thêm emoji thành công' });
+        return res.status(201).json({ message: 'Thêm emoji thành công' });
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi thêm emoji', error });
+        return res.status(500).json({ message: 'Lỗi khi thêm emoji', error });
     }
 };
 
@@ -130,9 +130,9 @@ const banPost = async (req, res) => {
         }
 
         await post.update({ isBanned: true });
-        res.status(200).json({ message: 'Bài viết đã bị cấm' });
+        return res.status(200).json({ message: 'Bài viết đã bị cấm' });
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi cấm bài viết', error });
+        return res.status(500).json({ message: 'Lỗi khi cấm bài viết', error });
     }
 };
 
@@ -147,9 +147,9 @@ const unbanPost = async (req, res) => {
         }
 
         await post.update({ isBanned: false });
-        res.status(200).json({ message: 'Bài viết đã được mở lại' });
+        return res.status(200).json({ message: 'Bài viết đã được mở lại' });
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi mở lại bài viết', error });
+        return res.status(500).json({ message: 'Lỗi khi mở lại bài viết', error });
     }
 };
 
@@ -177,9 +177,9 @@ const getPosts = async (req, res) => {
             order: [['createdAt', 'DESC']], // Sắp xếp theo thời gian tạo mới nhất
         });
 
-        res.status(200).json(posts);
+        return res.status(200).json(posts);
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi lấy danh sách bài viết', error });
+        return res.status(500).json({ message: 'Lỗi khi lấy danh sách bài viết', error });
     }
 };
 
