@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         image_url: {
             type: DataTypes.STRING,
             allowNull: true,
+            defaultValue: ''
         },
         emoji_list: { // Đổi tên từ emojis để tránh trùng lặp
             type: DataTypes.STRING,

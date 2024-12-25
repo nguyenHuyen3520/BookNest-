@@ -1,7 +1,9 @@
 // controllers/postController.js
-const Category = require('../models/Category');
 const { Post, User, Report, PostEmoji } = require('../models');
-// Danh sách lý do báo cáo
+const multer = require('multer');
+const upload = multer();
+const uploadImageToFirebase = require('../firebase/firebaseUtils'); // Giả sử bạn có một hàm upload ảnh lên Firebase
+
 const reportReasons = [
     { id: 1, reason: 'Nội dung không phù hợp' },
     { id: 2, reason: 'Spam hoặc quảng cáo' },
@@ -42,21 +44,31 @@ const reportPost = async (req, res) => {
 
         return res.status(201).json({ message: 'Báo cáo bài viết thành công', report });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Lỗi khi báo cáo bài viết', error });
     }
 };
 
-
-
 // Tạo bài viết mới
 const createPost = async (req, res) => {
+    console.log("in createPost: ", req);
     try {
-        const { title, content, imageUrl, categoryId } = req.body;
+        const { title, content, categoryId } = req.body;
         const userId = req.user.id;
 
-        const post = await Post.create({ title, content, imageUrl, userId, categoryId });
+        let data = { title, content, user_id: userId, category_id: categoryId };
+
+        if (req.file) {
+            const newImageUrl = await uploadImageToFirebase(req.file.buffer, req.file.mimetype);
+            data.image_url = newImageUrl;
+        }
+
+        // Tạo bài viết trong cơ sở dữ liệu
+        const post = await Post.create(data);
+
         return res.status(201).json({ message: 'Tạo bài viết thành công', post });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Lỗi khi tạo bài viết', error });
     }
 };
@@ -76,9 +88,11 @@ const updatePost = async (req, res) => {
             return res.status(403).json({ message: 'Không có quyền chỉnh sửa bài viết này' });
         }
 
-        await post.update({ title, content, imageUrl });
+        // Cập nhật bài viết
+        await post.update({ title, content, image_url: imageUrl });
         return res.status(200).json({ message: 'Cập nhật bài viết thành công', post });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Lỗi khi cập nhật bài viết', error });
     }
 };
@@ -97,13 +111,14 @@ const deletePost = async (req, res) => {
             return res.status(403).json({ message: 'Không có quyền xóa bài viết này' });
         }
 
+        // Xóa bài viết
         await post.destroy();
         return res.status(200).json({ message: 'Xóa bài viết thành công' });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Lỗi khi xóa bài viết', error });
     }
 };
-
 
 // Thêm emoji vào bài viết
 const addEmoji = async (req, res) => {
@@ -115,6 +130,7 @@ const addEmoji = async (req, res) => {
         await PostEmoji.create({ emoji, userId, postId: id });
         return res.status(201).json({ message: 'Thêm emoji thành công' });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Lỗi khi thêm emoji', error });
     }
 };
@@ -132,6 +148,7 @@ const banPost = async (req, res) => {
         await post.update({ isBanned: true });
         return res.status(200).json({ message: 'Bài viết đã bị cấm' });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Lỗi khi cấm bài viết', error });
     }
 };
@@ -149,10 +166,12 @@ const unbanPost = async (req, res) => {
         await post.update({ isBanned: false });
         return res.status(200).json({ message: 'Bài viết đã được mở lại' });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Lỗi khi mở lại bài viết', error });
     }
 };
 
+// Lấy danh sách bài viết
 const getPosts = async (req, res) => {
     try {
         const posts = await Post.findAll({
@@ -179,6 +198,7 @@ const getPosts = async (req, res) => {
 
         return res.status(200).json(posts);
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Lỗi khi lấy danh sách bài viết', error });
     }
 };
@@ -194,4 +214,3 @@ module.exports = {
     getReportReasons,
     getPosts
 };
-

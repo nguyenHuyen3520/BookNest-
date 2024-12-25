@@ -1,12 +1,31 @@
-// seeders/20241205-add-categories.js
 module.exports = {
     up: async (queryInterface, Sequelize) => {
         await queryInterface.bulkInsert('Categories', [
-            { name: 'Văn học' },
-            { name: 'Khoa học' },
-            { name: 'Kỹ năng sống' },
-            { name: 'Kinh tế' },
-            { name: 'Lịch sử' },
+            {
+                name: 'Văn học',
+                created_at: Sequelize.fn('NOW'),
+                updated_at: Sequelize.fn('NOW')
+            },
+            {
+                name: 'Khoa học',
+                created_at: Sequelize.fn('NOW'),
+                updated_at: Sequelize.fn('NOW')
+            },
+            {
+                name: 'Kỹ năng sống',
+                created_at: Sequelize.fn('NOW'),
+                updated_at: Sequelize.fn('NOW')
+            },
+            {
+                name: 'Kinh tế',
+                created_at: Sequelize.fn('NOW'),
+                updated_at: Sequelize.fn('NOW')
+            },
+            {
+                name: 'Lịch sử',
+                created_at: Sequelize.fn('NOW'),
+                updated_at: Sequelize.fn('NOW')
+            }
         ], {});
     },
     down: async (queryInterface, Sequelize) => {
